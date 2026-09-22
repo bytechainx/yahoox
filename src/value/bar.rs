@@ -97,6 +97,10 @@ pub fn validate_bar(bar: &YahooBar) -> YahooResult<()> {
         )));
     }
 
+    if let Period::Day(date) = bar.period {
+        crate::value::Date::new(date.year, date.month, date.day)?;
+    }
+
     if bar.frequency != Frequency::Daily {
         return Err(YahooError::Invalid(format!(
             "日线观测的频率必须是日频：{}",
@@ -260,5 +264,51 @@ mod tests {
         let mut outside = bar("GC=F");
         outside.close = YahooValue::Present(2600.0);
         assert!(validate_bar(&outside).is_err());
+    }
+
+    #[test]
+    fn validation_rechecks_public_period_dates() {
+        for date in [
+            Date {
+                year: 2026,
+                month: 2,
+                day: 30,
+            },
+            Date {
+                year: 2026,
+                month: 0,
+                day: 1,
+            },
+            Date {
+                year: 2026,
+                month: 12,
+                day: 0,
+            },
+        ] {
+            let mut value = bar("GC=F");
+            value.period = Period::Day(date);
+            assert!(validate_bar(&value).is_err());
+        }
+        for period in [
+            Period::Month {
+                year: 2026,
+                month: 2,
+            },
+            Period::Quarter {
+                year: 2026,
+                quarter: 1,
+            },
+            Period::Year(2026),
+            Period::Event {
+                date: Date::new(2026, 2, 1).unwrap(),
+            },
+        ] {
+            let mut value = bar("GC=F");
+            value.period = period;
+            assert!(validate_bar(&value).is_err());
+        }
+        let mut value = bar("GC=F");
+        value.period = Period::Day(Date::new(2024, 2, 29).unwrap());
+        assert!(validate_bar(&value).is_ok());
     }
 }
