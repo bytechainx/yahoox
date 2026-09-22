@@ -63,6 +63,10 @@ pub enum YahooAuthorization {
 
 /// fail-closed 的授权判定。
 ///
+/// 范围逐字匹配：`domain_yahoo_production_release` 来自 Owner 签核文件，
+/// `domain_yahoo_release` 为既有离线证据别名，`offline_parse_and_types` 为本库归一化范围。
+/// 三者仅映射到本库离线请求；其他源范围和带前后空白者不接受。
+///
 /// 证据缺失、决策 ID 空白、签署者空白或覆盖范围空白 → **一律** `Denied`；
 /// 请求 `LiveCollection` → **一律** `Denied`。MUST NOT 默认放行。
 #[must_use]
@@ -90,9 +94,12 @@ pub fn authorize_yahoo(
             reason: "证据缺少签署者（签署者不明）".into(),
         };
     }
-    if evidence.scope.trim().is_empty() {
+    if !matches!(
+        evidence.scope.as_str(),
+        "offline_parse_and_types" | "domain_yahoo_release" | "domain_yahoo_production_release"
+    ) {
         return YahooAuthorization::Denied {
-            reason: "证据未声明覆盖范围（覆盖范围不明）".into(),
+            reason: "证据范围未覆盖本次离线请求（范围未知或不匹配）".into(),
         };
     }
     YahooAuthorization::Authorized {
@@ -164,5 +171,35 @@ mod tests {
     fn declaration_constants_match_the_manifest() {
         assert_eq!(DECISION_ID, "YAHOO-PROD-2026-08-17-approve");
         assert_eq!(NOT_CLAIMS, ["repo_GO", "trading_GO", "package_stable"]);
+    }
+
+    #[test]
+    fn authorization_checks_scope_coverage() {
+        for scope in [
+            "unknown",
+            "unrelated_source_only",
+            "live_only",
+            " offline_fixture_only ",
+            " domain_yahoo_release",
+            "domain_yahoo_release ",
+            "treasury_offline-extra",
+        ] {
+            let e = YahooAuthorizationEvidence::new(DECISION_ID, "ZoneCNH", scope);
+            assert!(matches!(
+                authorize_yahoo(YahooScope::OfflineParseAndTypes, Some(&e)),
+                YahooAuthorization::Denied { .. }
+            ));
+        }
+        for scope in [
+            "offline_parse_and_types",
+            "domain_yahoo_release",
+            "domain_yahoo_production_release",
+        ] {
+            let e = YahooAuthorizationEvidence::new(DECISION_ID, "ZoneCNH", scope);
+            assert!(matches!(
+                authorize_yahoo(YahooScope::OfflineParseAndTypes, Some(&e)),
+                YahooAuthorization::Authorized { .. }
+            ));
+        }
     }
 }
