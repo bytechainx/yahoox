@@ -100,6 +100,17 @@ cargo package --no-verify
 
 测试全部离线：样本经 `include_str!` 内联，不访问外网，不读环境变量。
 
+此外有**全公开面 E2E** target `e2e_yahoo`（`tests/e2e_yahoo.rs`），执行核对器口径内的**全部 115 条**
+公开条目（`type` 18 / `variant` 53 / `field` 19 / `const` 6 / `fn` 19）：
+
+```bash
+CARGO_TARGET_DIR=/home/workspace/bytechainx/.cargo/target cargo test --test e2e_yahoo
+```
+
+本 crate 为**纯离线仓**（零网络、零凭据、零环境变量），该用例**不加 `#[ignore]`**，随 `cargo test`
+**默认参与 CI**（同 `configx`）。独立三层核对见 `scripts/verify-e2e-coverage.mjs yahoox`
+（`cargo +nightly public-api` 权威公开面 ⇄ 清单双向 diff + `-C instrument-coverage` 按函数执行计数）。
+
 `production_decision = NO-GO`（清单 COMPLETE ≠ ship；authorization ≠ Production Ready）。
 
 ## 许可

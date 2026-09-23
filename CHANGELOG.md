@@ -5,6 +5,13 @@
 
 ## [Unreleased]
 
+### 新增
+
+- 新增**全公开面 E2E** 测试 `tests/e2e_yahoo.rs`（target `e2e_yahoo`）：执行核对器口径内的全部
+  **115 条**公开条目（`type` 18 / `variant` 53 / `field` 19 / `const` 6 / `fn` 19）。
+  本 crate 为纯离线仓，该用例不加 `#[ignore]`，随 `cargo test` 默认参与 CI；
+  独立三层核对见 `scripts/verify-e2e-coverage.mjs yahoox`。
+
 ## [0.1.1] - 2026-09-23
 
 ### 修正
