@@ -8,7 +8,7 @@ Yahoo 源事实的**离线类型层**：日线观测、义务集与禁抢主源�
 `blocked` 采集路径拒绝、离线解析与 fail-closed 授权判定。
 **不实现联网采集**，不实现派生指标，不做单位换算，不成为应用的组合根。
 
-采集范围权威：`specs/adapter/yahoo.md`；跨源语义权威：`contracts/cross-source-routing.md`。
+采集范围权威：工作区根 `specs/adapter/yahoo.md`；跨源语义权威：工作区根 `specs/features/005-macro-data-source-crates/contracts/cross-source-routing.md`。
 
 ## 技术栈
 
