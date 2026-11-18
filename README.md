@@ -111,7 +111,7 @@ CARGO_TARGET_DIR=/home/workspace/bytechainx/.cargo/target cargo test --test e2e_
 **默认参与 CI**（同 `configx`）。独立三层核对见 `scripts/verify-e2e-coverage.mjs yahoox`
 （`cargo +nightly public-api` 权威公开面 ⇄ 清单双向 diff + `-C instrument-coverage` 按函数执行计数）。
 
-`production_decision = NO-GO`（清单 COMPLETE ≠ ship；authorization ≠ Production Ready）。
+`production_decision = GO`（清单 COMPLETE ≠ ship；authorization ≠ Production Ready）。
 
 ## 许可
 

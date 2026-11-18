@@ -5,6 +5,10 @@
 
 ## [Unreleased]
 
+
+### 变更
+
+- `production_decision` 由 `NO-GO` 翻为 `GO`（工作区 DDR-042，Owner 2026-11-18 裁定；`authorization_ref=user-session-20261118-production-decision-go`）。live 官方 PIT 等源级 `NO-GO` 判定不变。
 ### 新增
 
 - 新增**全公开面 E2E** 测试 `tests/e2e_yahoo.rs`（target `e2e_yahoo`）：执行核对器口径内的全部

@@ -40,7 +40,7 @@
 //!
 //! ## 诚实边界
 //!
-//! `production_decision = NO-GO`；清单 COMPLETE ≠ ship；authorization ≠ Production Ready。
+//! `production_decision = GO`；清单 COMPLETE ≠ ship；authorization ≠ Production Ready。
 //! 授权判定只回答「该源的这个范围是否被授权访问」，**不是**「本库是否生产就绪」。
 //! `tests/fixtures/` 内的样本全部为**合成样本**，不是真实源数据，不构成任何证据。
 //!
